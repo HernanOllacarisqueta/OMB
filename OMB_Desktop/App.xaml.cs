@@ -5,6 +5,8 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using GalaSoft.MvvmLight.Ioc;
+using Microsoft.Practices.ServiceLocation;
 
 namespace OMB_Desktop
 {
@@ -17,7 +19,7 @@ namespace OMB_Desktop
     {
       //  aca seteo el service locator, como para que cualquier clase dentro de la app pueda utilizar el mismo contenedor
       //
-      //  ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
+      ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
     }
   }
 }

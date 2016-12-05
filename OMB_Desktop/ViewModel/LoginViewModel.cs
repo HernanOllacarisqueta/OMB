@@ -10,7 +10,6 @@ using Entidades;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Infraestructura;
-using OMB_Desktop.Common;
 using Prism.Interactivity.InteractionRequest;
 using Servicios;
 
@@ -29,11 +28,20 @@ namespace OMB_Desktop.ViewModel
       }
     }
 
+    private string _password;
+
+    public string Password
+    {
+        get { return _password; }
+        set { Set(() => Password, ref _password, value); }
+    }
+
+
     public InteractionRequest<INotification> FaltanDatos { get; set; }
 
     public InteractionRequest<INotification> CredencialesInvalidas { get; set; }
 
-    public RelayCommand<string> LoginCommand { get; set; }
+    public RelayCommand LoginCommand { get; set; }
 
     public INotification Notification { get; set; }
 
@@ -44,21 +52,21 @@ namespace OMB_Desktop.ViewModel
       //  LoginID = "---";
       //
       //  bindeamos comandos
-      LoginCommand = new RelayCommand<string>(DoLogin);
+      LoginCommand = new RelayCommand(DoLogin);
 
       FaltanDatos = new InteractionRequest<INotification>();
       CredencialesInvalidas = new InteractionRequest<INotification>();
     }
 
-    public void DoLogin(string pass)
+    public void DoLogin()
     {
-      SecurityServices seg = new SecurityServices(new NullMailService());
+      SecurityServices seg = new SecurityServices();
 
-      if (!string.IsNullOrWhiteSpace(pass))
+      if (!string.IsNullOrWhiteSpace(Password) && !string.IsNullOrWhiteSpace(LoginID))
       {
-        Console.WriteLine(pass);
+        Console.WriteLine(Password);
 
-        if (seg.Login(LoginID, pass))
+        if (seg.Login(LoginID, Password))
         {
           //  OMBSesion sesion = new OMBSesion(user);
 
