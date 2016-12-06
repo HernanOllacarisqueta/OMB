@@ -43,6 +43,8 @@ namespace OMB_Desktop.ViewModel
 
     public RelayCommand LoginCommand { get; set; }
 
+    public ICommand BorrarEntradas { get; set; }
+
     public INotification Notification { get; set; }
 
     public Action FinishInteraction { get; set; }
@@ -56,6 +58,12 @@ namespace OMB_Desktop.ViewModel
 
       FaltanDatos = new InteractionRequest<INotification>();
       CredencialesInvalidas = new InteractionRequest<INotification>();
+
+      BorrarEntradas = new RelayCommand(() =>
+      {
+          LoginID = null;
+          Password = null;
+      });
     }
 
     public void DoLogin()
