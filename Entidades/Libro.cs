@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Entidades
 {
-    class Libro
+    public class Libro
     {
         public Guid ID_Libro { get; set; }
         public string ISBN { get; set; }
@@ -16,7 +16,7 @@ namespace Entidades
         public DateTime FechaPublicacion { get; set; }
         public int Paginas { get; set; }
         public string DatosEnvio { get; set; }
-        public Editorial Editorial { get; set; }
+        public Editorial ID_Editorial { get; set; }
         public byte[] image { get; set; }
 
         public Libro()

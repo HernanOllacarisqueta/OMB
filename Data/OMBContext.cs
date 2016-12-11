@@ -14,295 +14,313 @@ using Entidades;
 
 namespace Data
 {
-  /// <summary>
-  /// SINGLETON
-  /// Retorna en la propiedad DB un contexto para acceder a las diferentes colecciones
-  /// </summary>
-  public class OMBContext : DbContext
-  {
-    public DbSet<Categoria> Categorias { get; set; }
-
-    public DbSet<Localidad> Localidades { get; set; }
-
-    public DbSet<Provincia> Provincias { get; set; }
-
-    public DbSet<TipoContacto> TiposContacto { get; set; }
-
-    public DbSet<TipoDocumento> TiposDeDocumento { get; set; }
-
-    public DbSet<Persona> Personas { get; set; }
-
-    //public DbSet<CategoriaEmpleado> CategoriasEmpleado { get; set; }
-
-    public DbSet<Empleado> Empleados { get; set; }
-
-    public DbSet<Usuario> Usuarios { get; set; }
-
-    //  Agregamos libros y editoriales
-
-    public DbSet<Editorial> Editoriales { get; set; }
-
-    private StreamWriter writer;
-
-    public static OMBContext DB
+    /// <summary>
+    /// SINGLETON
+    /// Retorna en la propiedad DB un contexto para acceder a las diferentes colecciones
+    /// </summary>
+    public class OMBContext : DbContext
     {
-      get
-      {
-        if (_ctx == null)
-          _ctx = new OMBContext();
+        public DbSet<Categoria> Categorias { get; set; }
 
-        return _ctx;
-      }
-    }
+        public DbSet<Localidad> Localidades { get; set; }
 
-    private static OMBContext _ctx;
+        public DbSet<Provincia> Provincias { get; set; }
 
-    private OMBContext()
-    {
-      //Configuration.LazyLoadingEnabled = false;
+        public DbSet<TipoContacto> TiposContacto { get; set; }
+
+        public DbSet<TipoDocumento> TiposDeDocumento { get; set; }
+
+        public DbSet<Persona> Personas { get; set; }
+
+        //public DbSet<CategoriaEmpleado> CategoriasEmpleado { get; set; }
+
+        public DbSet<Empleado> Empleados { get; set; }
+
+        public DbSet<Usuario> Usuarios { get; set; }
+
+        //  Agregamos libros y editoriales
+
+        public DbSet<Editorial> Editoriales { get; set; }
+
+        public DbSet<Libro> Libros { get; set; }
+
+        private StreamWriter writer;
+
+        public static OMBContext DB
+        {
+            get
+            {
+                if (_ctx == null)
+                    _ctx = new OMBContext();
+
+                return _ctx;
+            }
+        }
+
+        private static OMBContext _ctx;
+
+        private OMBContext()
+        {
+            //Configuration.LazyLoadingEnabled = false;
 
 #if CS5
       writer = File.CreateText(string.Format(@"{0}\{1}.LOG", Environment.CurrentDirectory, this.GetType().Name));
 #else
-      writer = File.CreateText($@"{Environment.CurrentDirectory}\{this.GetType().Name}.LOG");
+            writer = File.CreateText($@"{Environment.CurrentDirectory}\{this.GetType().Name}.LOG");
 #endif
-      //  writer = File.CreateText(string.Format(@"{0}\{1}.LOG", "F:\\", this.GetType().Name));
-      Database.Log = writer.WriteLine;
+            //  writer = File.CreateText(string.Format(@"{0}\{1}.LOG", "F:\\", this.GetType().Name));
+            Database.Log = writer.WriteLine;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+            writer.Close();
+        }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            modelBuilder.Configurations.Add(new ConfigurarCategoria());
+            modelBuilder.Configurations.Add(new ConfigurarTiposDocumento());
+
+            modelBuilder.Configurations.Add(new ConfigurarProvincia());
+            modelBuilder.Configurations.Add(new ConfigurarLocalidad());
+
+            modelBuilder.Configurations.Add(new ConfigurarPersona());
+            modelBuilder.Configurations.Add(new ConfigurarContacto());
+            modelBuilder.Configurations.Add(new ConfigurarTipoContacto());
+
+            modelBuilder.Configurations.Add(new ConfigurarEmpleado());
+            modelBuilder.Configurations.Add(new ConfigurarUsuario());
+
+            modelBuilder.Configurations.Add(new ConfigurarEditorial());
+            modelBuilder.Configurations.Add(new ConfigurarLibro());
+        }
+
+        //protected override bool ShouldValidateEntity(DbEntityEntry entityEntry)
+        //{
+        //  if (entityEntry.Entity is Libro)
+        //    return false;
+
+        //  return base.ShouldValidateEntity(entityEntry);
+        //}
+
+        public void MostrarCambios([CallerMemberName] string header = null)
+        {
+            if (header != null)
+            {
+                Console.WriteLine(new string('=', header.Length));
+                Console.WriteLine(header);
+                Console.WriteLine(new string('=', header.Length));
+            }
+
+            //  DbEntityEntry
+            foreach (var entry in ChangeTracker.Entries())
+            {
+                Console.WriteLine("Tipo de la entidad: {0} ; State: {1}", entry.Entity.GetType().FullName, entry.State);
+            }
+        }
     }
 
-    protected override void Dispose(bool disposing)
-    {
-      base.Dispose(disposing);
-      writer.Close();
-    }
+    /*
+     * Si quiero configurar aspectos de EF que no estan en App.config (ojo que los del archivo siempre tienen mas prioridad!!)
+     * por ejemplo si voy a crear conexiones por defecto a LocalDB o a SQL o a SQL Compact...
+     * La clase tiene que estar ACA para que EF detecte que desciende de DbConfiguration y la utilice!!
 
-    protected override void OnModelCreating(DbModelBuilder modelBuilder)
-    {
-      modelBuilder.Configurations.Add(new ConfigurarCategoria());
-      modelBuilder.Configurations.Add(new ConfigurarTiposDocumento());
 
-      modelBuilder.Configurations.Add(new ConfigurarProvincia());
-      modelBuilder.Configurations.Add(new ConfigurarLocalidad());
-
-      modelBuilder.Configurations.Add(new ConfigurarPersona());
-      modelBuilder.Configurations.Add(new ConfigurarContacto());
-      modelBuilder.Configurations.Add(new ConfigurarTipoContacto());
-
-      modelBuilder.Configurations.Add(new ConfigurarEmpleado());
-      modelBuilder.Configurations.Add(new ConfigurarUsuario());
-
-      modelBuilder.Configurations.Add(new ConfigurarEditorial());
-    }
-
-    //protected override bool ShouldValidateEntity(DbEntityEntry entityEntry)
-    //{
-    //  if (entityEntry.Entity is Libro)
-    //    return false;
-
-    //  return base.ShouldValidateEntity(entityEntry);
-    //}
-
-    public void MostrarCambios([CallerMemberName] string header = null)
-    {
-      if (header != null)
+      public class OMBConfiguration : DbConfiguration
       {
-        Console.WriteLine(new string('=', header.Length));
-        Console.WriteLine(header);
-        Console.WriteLine(new string('=', header.Length));
+        public OMBConfiguration()
+        {
+          this.SetDefaultConnectionFactory(new LocalDbConnectionFactory("ProjectsV13"));
+          this.SetDefaultConnectionFactory(new SqlConnectionFactory());
+        }
       }
-
-      //  DbEntityEntry
-      foreach (var entry in ChangeTracker.Entries())
-      {
-        Console.WriteLine("Tipo de la entidad: {0} ; State: {1}", entry.Entity.GetType().FullName, entry.State);
-      }
-    }
-  }
-
-  /*
-   * Si quiero configurar aspectos de EF que no estan en App.config (ojo que los del archivo siempre tienen mas prioridad!!)
-   * por ejemplo si voy a crear conexiones por defecto a LocalDB o a SQL o a SQL Compact...
-   * La clase tiene que estar ACA para que EF detecte que desciende de DbConfiguration y la utilice!!
-
-
-    public class OMBConfiguration : DbConfiguration
+    */
+    public class ConfigurarCategoria : EntityTypeConfiguration<Categoria>
     {
-      public OMBConfiguration()
-      {
-        this.SetDefaultConnectionFactory(new LocalDbConnectionFactory("ProjectsV13"));
-        this.SetDefaultConnectionFactory(new SqlConnectionFactory());
-      }
+        public ConfigurarCategoria()
+        {
+            this.HasKey(categ => categ.IDCategoria);
+            this.Property(cat => cat.IDCategoria)
+              .HasColumnName("ID_Categoria");
+
+            //  para SQL Compact, eliminar la opcion siguiente
+            //  Property(x => x.CategoriaID).HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+
+            this.HasOptional(cat => cat.Parent)
+              .WithMany(cat => cat.SubCategorias)
+              .Map(conf => conf.MapKey("Categoria_Up"));
+        }
     }
-  */
-  public class ConfigurarCategoria : EntityTypeConfiguration<Categoria>
-  {
-    public ConfigurarCategoria()
+
+    public class ConfigurarLocalidad : EntityTypeConfiguration<Localidad>
     {
-      this.HasKey(categ => categ.IDCategoria);
-      this.Property(cat => cat.IDCategoria)
-        .HasColumnName("ID_Categoria");
+        public ConfigurarLocalidad()
+        {
+            this.ToTable("Localidades");
+            this.HasKey(loc => loc.IDLocalidad);
 
-      //  para SQL Compact, eliminar la opcion siguiente
-      //  Property(x => x.CategoriaID).HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            this.Property(loc => loc.IDLocalidad)
+              .HasColumnName("ID_Localidad");
+            this.Property(loc => loc.Nombre)
+              .HasColumnName("Localidad");
 
-      this.HasOptional(cat => cat.Parent)
-        .WithMany(cat => cat.SubCategorias)
-        .Map(conf => conf.MapKey("Categoria_Up"));
+            this.HasRequired(loc => loc.Provincia)
+              .WithMany(prov => prov.Localidades)
+              .Map(cfg => cfg.MapKey("ID_Provincia"));
+        }
     }
-  }
 
-  public class ConfigurarLocalidad : EntityTypeConfiguration<Localidad>
-  {
-    public ConfigurarLocalidad()
+    public class ConfigurarProvincia : EntityTypeConfiguration<Provincia>
     {
-      this.ToTable("Localidades");
-      this.HasKey(loc => loc.IDLocalidad);
+        public ConfigurarProvincia()
+        {
+            this.HasKey(prov => prov.IDProvincia);
 
-      this.Property(loc => loc.IDLocalidad)
-        .HasColumnName("ID_Localidad");
-      this.Property(loc => loc.Nombre)
-        .HasColumnName("Localidad");
+            this.Property(prov => prov.Nombre)
+              .HasColumnName("Provincia");
 
-      this.HasRequired(loc => loc.Provincia)
-        .WithMany(prov => prov.Localidades)
-        .Map(cfg => cfg.MapKey("ID_Provincia"));
+            this.Property(prov => prov.IDProvincia)
+              .HasColumnName("ID_Provincia")
+              .IsFixedLength()
+              .HasMaxLength(1);
+        }
     }
-  }
 
-  public class ConfigurarProvincia : EntityTypeConfiguration<Provincia>
-  {
-    public ConfigurarProvincia()
+    public class ConfigurarTiposDocumento : EntityTypeConfiguration<TipoDocumento>
     {
-      this.HasKey(prov => prov.IDProvincia);
-
-      this.Property(prov => prov.Nombre)
-        .HasColumnName("Provincia");
-
-      this.Property(prov => prov.IDProvincia)
-        .HasColumnName("ID_Provincia")
-        .IsFixedLength()
-        .HasMaxLength(1);
+        public ConfigurarTiposDocumento()
+        {
+            this.ToTable("TiposDeDocumento");
+            this.HasKey(tipo => tipo.IDTipoDocumento);
+            this.Property(tipo => tipo.IDTipoDocumento)
+              .HasColumnName("ID_TipoDocumento");
+        }
     }
-  }
 
-  public class ConfigurarTiposDocumento : EntityTypeConfiguration<TipoDocumento>
-  {
-    public ConfigurarTiposDocumento()
+    public class ConfigurarPersona : EntityTypeConfiguration<Persona>
     {
-      this.ToTable("TiposDeDocumento");
-      this.HasKey(tipo => tipo.IDTipoDocumento);
-      this.Property(tipo => tipo.IDTipoDocumento)
-        .HasColumnName("ID_TipoDocumento");
-    }
-  }
+        public ConfigurarPersona()
+        {
+            this.HasKey(per => per.IDPersona);
+            this.Property(per => per.IDPersona)
+              .HasColumnName("ID_Persona");
 
-  public class ConfigurarPersona : EntityTypeConfiguration<Persona>
-  {
-    public ConfigurarPersona()
+            this.HasMany(per => per.InfoContacto)
+              .WithRequired()
+              .Map(cfg => cfg.MapKey("ID_Persona"));
+
+            this.HasOptional(per => per.Localidad)
+              .WithMany()
+              .Map(cfg => cfg.MapKey("ID_Localidad"));
+
+            this.HasOptional(per => per.TipoDocumento)
+              .WithMany()
+              .Map(cfg => cfg.MapKey("ID_TipoDocumento"));
+        }
+    }
+
+    public class ConfigurarContacto : EntityTypeConfiguration<Contacto>
     {
-      this.HasKey(per => per.IDPersona);
-      this.Property(per => per.IDPersona)
-        .HasColumnName("ID_Persona");
+        public ConfigurarContacto()
+        {
+            this.HasKey(cont => cont.IDContacto);
 
-      this.HasMany(per => per.InfoContacto)
-        .WithRequired()
-        .Map(cfg => cfg.MapKey("ID_Persona"));
+            this.ToTable("Contactos");
 
-      this.HasOptional(per => per.Localidad)
-        .WithMany()
-        .Map(cfg => cfg.MapKey("ID_Localidad"));
+            this.Property(cont => cont.IDContacto)
+              .HasColumnName("ID_Contacto");
 
-      this.HasOptional(per => per.TipoDocumento)
-        .WithMany()
-        .Map(cfg => cfg.MapKey("ID_TipoDocumento"));
+            this.HasRequired(cont => cont.Tipo)
+              .WithMany()
+              .Map(cfg => cfg.MapKey("ID_TipoContacto"));
+        }
     }
-  }
 
-  public class ConfigurarContacto : EntityTypeConfiguration<Contacto>
-  {
-    public ConfigurarContacto()
+    public class ConfigurarTipoContacto : EntityTypeConfiguration<TipoContacto>
     {
-      this.HasKey(cont => cont.IDContacto);
+        public ConfigurarTipoContacto()
+        {
+            this.ToTable("TiposDeContacto");
 
-      this.ToTable("Contactos");
+            this.HasKey(tcon => tcon.IDTipoContacto);
 
-      this.Property(cont => cont.IDContacto)
-        .HasColumnName("ID_Contacto");
+            this.Property(tcon => tcon.RegExp)
+              .HasColumnName("Validacion");
 
-      this.HasRequired(cont => cont.Tipo)
-        .WithMany()
-        .Map(cfg => cfg.MapKey("ID_TipoContacto"));
+            this.Property(tcon => tcon.IDTipoContacto)
+              .HasColumnName("ID_TipoContacto");
+        }
     }
-  }
 
-  public class ConfigurarTipoContacto : EntityTypeConfiguration<TipoContacto>
-  {
-    public ConfigurarTipoContacto()
+    public class ConfigurarEmpleado : EntityTypeConfiguration<Empleado>
     {
-      this.ToTable("TiposDeContacto");
+        public ConfigurarEmpleado()
+        {
+            this.ToTable("Empleados");
 
-      this.HasKey(tcon => tcon.IDTipoContacto);
+            this.HasKey(emp => emp.Legajo);
 
-      this.Property(tcon => tcon.RegExp)
-        .HasColumnName("Validacion");
-
-      this.Property(tcon => tcon.IDTipoContacto)
-        .HasColumnName("ID_TipoContacto");
+            this.HasRequired(emp => emp.Persona)
+              .WithOptional()
+              .Map(cfg => cfg.MapKey("ID_Persona"));
+        }
     }
-  }
 
-  public class ConfigurarEmpleado : EntityTypeConfiguration<Empleado>
-  {
-    public ConfigurarEmpleado()
+    public class ConfigurarUsuario : EntityTypeConfiguration<Usuario>
     {
-      this.ToTable("Empleados");
+        public ConfigurarUsuario()
+        {
+            this.ToTable("Usuarios");
 
-      this.HasKey(emp => emp.Legajo);
+            this.HasKey(usr => usr.Login);
 
-      this.HasRequired(emp => emp.Persona)
-        .WithOptional()
-        .Map(cfg => cfg.MapKey("ID_Persona"));
+            this.Property(usr => usr.PasswordExpiration)
+              .HasColumnName("FechaExpiracionPassword");
+
+            this.Property(usr => usr.LastFailLogin)
+              .HasColumnName("FechaLastLoginBAD");
+
+            this.Property(usr => usr.LastSuccessLogin)
+              .HasColumnName("FechaLastLoginOK");
+
+            this.HasRequired(usr => usr.Empleado)
+              //  .WithOptional()
+              .WithMany()
+              .Map(cfg => cfg.MapKey("Legajo"));
+        }
     }
-  }
 
-  public class ConfigurarUsuario : EntityTypeConfiguration<Usuario>
-  {
-    public ConfigurarUsuario()
+    public class ConfigurarEditorial : EntityTypeConfiguration<Editorial>
     {
-      this.ToTable("Usuarios");
+        public ConfigurarEditorial()
+        {
+            this.ToTable("Editoriales");
 
-      this.HasKey(usr => usr.Login);
+            this.HasKey(edit => edit.IDEditorial);
 
-      this.Property(usr => usr.PasswordExpiration)
-        .HasColumnName("FechaExpiracionPassword");
+            this.Property(edit => edit.IDEditorial)
+              .HasColumnName("ID_Editorial");
 
-      this.Property(usr => usr.LastFailLogin)
-        .HasColumnName("FechaLastLoginBAD");
-
-      this.Property(usr => usr.LastSuccessLogin)
-        .HasColumnName("FechaLastLoginOK");
-
-      this.HasRequired(usr => usr.Empleado)
-        //  .WithOptional()
-        .WithMany()
-        .Map(cfg => cfg.MapKey("Legajo"));
+            this.HasOptional(edit => edit.Localidad)
+              .WithMany()
+              .Map(cfg => cfg.MapKey("ID_Localidad"));
+        }
     }
-  }
 
-  public class ConfigurarEditorial : EntityTypeConfiguration<Editorial>
-  {
-    public ConfigurarEditorial()
+    public class ConfigurarLibro : EntityTypeConfiguration<Libro>
     {
-      this.ToTable("Editoriales");
+        public ConfigurarLibro()
+        {
+            this.ToTable("Libros");
 
-      this.HasKey(edit => edit.IDEditorial);
+            this.HasKey(libro => libro.ID_Libro);
 
-      this.Property(edit => edit.IDEditorial)
-        .HasColumnName("ID_Editorial");
+            this.HasOptional(edit => edit.ID_Editorial)
+              .WithMany()
+              .Map(cfg => cfg.MapKey("ID_Editorial"));
 
-      this.HasOptional(edit => edit.Localidad)
-        .WithMany()
-        .Map(cfg => cfg.MapKey("ID_Localidad"));
+        }
     }
-  }
 }
