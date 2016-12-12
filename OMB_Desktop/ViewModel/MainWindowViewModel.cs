@@ -57,6 +57,8 @@ namespace OMB_Desktop.ViewModel
 
     public InteractionRequest<IConfirmation> ConfirmarComando { get; set; }
 
+    //public InteractionRequest<INotification> DisplayBookAdd { get; set; }
+
     /*
       InteractionRequest es la manera que tiene la ui de avisarnos que existe un pedido del
       usuario para por ejemplo mostrar unn dialogo
@@ -68,6 +70,8 @@ namespace OMB_Desktop.ViewModel
     public MainWindowViewModel()
     {
       DisplayLogin = new InteractionRequest<INotification>();
+
+      //DisplayBookAdd = new InteractionRequest<INotification>();
 
       Login = new RelayCommand(() =>
       {

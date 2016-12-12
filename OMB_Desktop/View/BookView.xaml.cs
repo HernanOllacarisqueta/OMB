@@ -17,7 +17,7 @@ namespace OMB_Desktop.View
     /// <summary>
     /// Lógica de interacción para BookView.xaml
     /// </summary>
-    public partial class BookView : Window
+    public partial class BookView : UserControl
     {
         public BookView()
         {
