@@ -1,0 +1,66 @@
+﻿<UserControl x:Class="OMB_Desktop.View.BookView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:prism="http://prismlibrary.com/"
+        xmlns:local="clr-namespace:OMB_Desktop.View"
+        xmlns:viewModel="clr-namespace:OMB_Desktop.ViewModel"
+        mc:Ignorable="d"
+        Height="500" Width="300">
+
+    <i:Interaction.Triggers>
+        <prism:InteractionRequestTrigger SourceObject="{Binding FaltanDatosLibros}">
+            <prism:PopupWindowAction IsModal="True" CenterOverAssociatedObject="True"></prism:PopupWindowAction>
+        </prism:InteractionRequestTrigger>
+    </i:Interaction.Triggers>
+
+    <Grid>
+        <StackPanel Margin="10">
+            
+            <DockPanel Margin="10">
+                <Label Width="80">ISBN-13</Label>
+                <TextBox Name="txtISBN13" Text="{Binding ISBN13, UpdateSourceTrigger=PropertyChanged}" 
+               VerticalContentAlignment="Center"></TextBox>
+            </DockPanel>
+
+            <DockPanel Margin="10">
+                <Label Width="80">ISBN-10</Label>
+                <TextBox Name="txtISBN10" Text="{Binding ISBN10, UpdateSourceTrigger=PropertyChanged}" 
+               VerticalContentAlignment="Center"></TextBox>
+            </DockPanel>
+
+            <DockPanel Margin="10">
+                <Label Width="80">Título</Label>
+                <TextBox Name="txtTitulo" Text="{Binding Titulo, UpdateSourceTrigger=PropertyChanged}" 
+               VerticalContentAlignment="Center"></TextBox>
+            </DockPanel>
+
+            <DockPanel Margin="10">
+                <Label Width="80">SubTítulo</Label>
+                <TextBox Name="txtSubTitulo" Text="{Binding SubTitulo, UpdateSourceTrigger=PropertyChanged}" 
+               VerticalContentAlignment="Center"></TextBox>
+            </DockPanel>
+
+            <DockPanel Margin="10">
+                <Label Width="80">Publicación</Label>
+                <CalendarDayButton Content=""></CalendarDayButton>
+            </DockPanel>
+
+            <DockPanel Margin="10">
+                <Label Width="80">Editorial</Label>
+                <TextBox Name="txtsadasdasdasdasdas" Text="{Binding SubTitulo, UpdateSourceTrigger=PropertyChanged}" 
+               VerticalContentAlignment="Center"></TextBox>
+            </DockPanel>
+
+            <DockPanel Margin="10">
+                <Button Width="100" Command="{Binding AgregarLibro}" IsDefault="True">Agregar</Button>
+                <Button Width="100" Command="{Binding CancelarLibro}" IsDefault="True">Cancelar</Button>
+            </DockPanel>
+
+        </StackPanel>
+
+    </Grid>
+
+</UserControl>

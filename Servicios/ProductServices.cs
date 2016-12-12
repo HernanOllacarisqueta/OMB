@@ -30,8 +30,7 @@ namespace Servicios
 
             //Necesario hacer esto?
             Book = ctx.Libros.FirstOrDefault(libro => libro.Titulo == titulo && libro.ISBN == isbn && libro.ISBN_10 == isbn_10);
-
-            //Si es error de Base de datos?     
+                            
             if (Book != null && !ValidateBook(titulo, isbn, isbn_10))
             {
                 Libro Libro = new Libro();
@@ -44,7 +43,7 @@ namespace Servicios
             }
             else
             {
-                ErrorInfo = "Libro existente 2";
+                //ErrorInfo = "Libro existente 2"; //Si es error de Base de datos? 
                 result = false;
             }
 
@@ -61,7 +60,7 @@ namespace Servicios
             {
                 //  TODO incorporar hashing para comparar con la que obtenemos de la tabla
                 int cuenta = OMBContext.DB.Database
-                          .SqlQuery<int>("select count(*) from Libros where Titulo = @p0 and Isbn = @p1 and Isbn_10 = @p2", titulo, isbn, isbn_10)
+                          .SqlQuery<int>("select count(*) from Libros where Titulo = @p0 and ISBN = @p1 and ISBN10 = @p2", titulo, isbn, isbn_10)
                           .FirstOrDefault();
 
                 if (cuenta == 0)
@@ -88,6 +87,12 @@ namespace Servicios
             return OMBContext.DB.Set<Editorial>();
         }
 
+        /*
+        public IEnumerable<Editorial> ObtenerEditorales2()
+        {
+            return OMBContext.DB.Set<Editorial>();
+        }
+        */
 
         //Editoriales = OMBContext.DB.Database.ExecuteSqlCommand("select * from Editoriales");
         //

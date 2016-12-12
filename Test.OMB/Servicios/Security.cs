@@ -29,5 +29,13 @@ namespace Test.OMB.Servicios
 
             Assert.IsTrue(result, "No hay un usuario ethedy???");
         }
+
+        [TestMethod]
+        public void TestearObtenerEditoriales()
+        {
+            ProductServices serv = new ProductServices();
+
+        }
+        
     }
 }
