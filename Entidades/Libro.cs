@@ -10,14 +10,14 @@ namespace Entidades
     {
         public Guid ID_Libro { get; set; }
         public string ISBN { get; set; }
-        public string ISBN_10 { get; set; }
+        public string ISBN10 { get; set; }
         public string Titulo { get; set; }
         public string Subtitulo { get; set; }
         public DateTime FechaPublicacion { get; set; }
         public int Paginas { get; set; }
         public string DatosEnvio { get; set; }
         public Editorial ID_Editorial { get; set; }
-        public byte[] image { get; set; }
+        public byte[] Portada { get; set; }
 
         public Libro()
         {

@@ -45,13 +45,14 @@
 
             <DockPanel Margin="10">
                 <Label Width="80">Publicación</Label>
-                <CalendarDayButton Content=""></CalendarDayButton>
+                <TextBox Name="txtPublicacion" Text="{Binding Publicacion, UpdateSourceTrigger=PropertyChanged}" 
+               VerticalContentAlignment="Center"></TextBox>
             </DockPanel>
 
             <DockPanel Margin="10">
                 <Label Width="80">Editorial</Label>
-                <TextBox Name="txtsadasdasdasdasdas" Text="{Binding SubTitulo, UpdateSourceTrigger=PropertyChanged}" 
-               VerticalContentAlignment="Center"></TextBox>
+                <ComboBox Name="txtEditorial" Text="{Binding Editorial, UpdateSourceTrigger=PropertyChanged}" 
+               VerticalContentAlignment="Center"></ComboBox>
             </DockPanel>
 
             <DockPanel Margin="10">

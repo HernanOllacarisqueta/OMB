@@ -100,9 +100,14 @@
     <Compile Include="Desktop\Login.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Servicios\Security.cs" />
+    <Compile Include="Servicios\Product.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <ProjectReference Include="..\Entidades\Entidades.csproj">
+      <Project>{49976ae9-3d6e-47e3-a1c7-1a2ce9a414e3}</Project>
+      <Name>Entidades</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OMB_Desktop\OMB_Desktop.csproj">
       <Project>{79014A5D-20D1-4394-A107-F5AB58E1469D}</Project>
       <Name>OMB_Desktop</Name>

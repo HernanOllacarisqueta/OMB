@@ -11,12 +11,12 @@ using Servicios;
 
 
 namespace Test.OMB.Servicios
-{
+{ 
     [TestClass]
-    public class Security
+    public class Productos
     {
         [TestMethod]
-        public void ProbarLoginConDatosIncorrectos()
+        public void ProbarLoginConDatosIncordrectos()
         {
             SecurityServices serv = new SecurityServices();
             bool result;
@@ -26,17 +26,5 @@ namespace Test.OMB.Servicios
             Assert.IsFalse(result, "Hay un usuario pirulo???");
         }
 
-        [TestMethod]
-        public void ProbarLoginConDatosCorrectos()
-        {
-            SecurityServices serv = new SecurityServices();
-            bool result;
-
-            result = serv.Login("ethedy", "12345678");
-
-            Assert.IsTrue(result, "No hay un usuario ethedy???");
-        }
-
     }
-
 }
